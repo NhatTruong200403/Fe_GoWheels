@@ -1,0 +1,251 @@
+﻿<template>
+  <div>
+    
+<h1>Chi tiết đặt cọc</h1>
+<!-- 
+
+
+<div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);margin:10px;padding:30px;margin-bottom:20px;background-color:white;border-radius:5px;">
+
+    <div class="tren">
+        <div class="trai">Tên chủ xe : @currentUser.Name</div>
+        <div class="phai" style="color:orange;font-size:20px;">@Model.Status</div>
+    </div>
+    <hr />
+    <div class="giua">
+        <div class="trai" >
+            <p style="padding:10px 20px;font-size:30px;font-weight:bold;">@post.Name</p>
+            <img src="@Url.Content(post.Image)" style="height:350px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);border-radius:5px;" />
+        </div>
+        <div class="phai" style="width:40%;">
+           
+            @* <p>Giá xe : @post.Price/giờ</p>
+            <p>Ngày nhận xe: @Model.RecieveOn</p>
+            <p>Ngày trả xe: @Model.ReturnOn</p>
+            <p>Tổng tiền thuê : @sum</p>
+            <p>Giảm giá : @Model.Promotion.Content</p>
+            <p>Thành tiền : @Model.Total</p>
+            <p>Đã đặt cọc : @Model.PrePayment</p>
+            <p> *@
+
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Giá xe</td>
+                        <td>@post.Price/giờ</td>
+                    </tr>
+                    <tr>
+                        <td>Ngày nhận xe</td>
+                        <td>@Model.RecieveOn</td>
+                    </tr>
+                    <tr>
+                        <td>Ngày trả xe</td>
+                        <td>@Model.ReturnOn</td>
+                    </tr>
+                    <tr>
+                        <td>Tổng tiền thuê</td>
+                        <td>@sum</td>
+                    </tr>
+                    <tr>
+                        <td>Giảm giá</td>
+                        @if (Model.PromotionId != null)
+                        {
+                            <td>@Model.Promotion.Content</td>
+                        }
+                        else
+                        {
+                            <td>Không có khuyến mãi</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Thành tiền</td>
+                        <td>@Model.Total</td>
+                    </tr>
+                    <tr>
+                        <td>Đã đặt cọc</td>
+                        <td>@Model.PrePayment</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+    <hr />
+    <div class="duoi">
+        <div class="trai">
+            
+            <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" style="padding:13px 20px;background-color:cadetblue;border-radius:5px;">
+                @if (Model.Status == "Hoàn thành")
+                {
+                    <label>Thuê xe lại</label>
+                }
+                else
+                {
+                    <label>Xem bài viết</label>
+                }
+                
+                
+            </a>
+        </div>
+        <div class="phai">
+            <div>
+                @{
+                    var tien = Model.Total - Model.PrePayment;
+                }
+                Số tiền cần thanh toán : @tien
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+  </div>
+</template>
+
+<script>
+import BookingVM from '../../../../Model/BookingVM';
+import BookingService from '../../../../Service/api/BookingService';
+
+export default{
+  data () {
+    return {
+        booking: new BookingVM(),
+    }
+  },
+  methods: {
+    async getBooking(){
+        const id = this.$route.params.id;
+        const response = await BookingService.GetBookingById(id);
+        console.log(response);
+    }
+  },
+  created () {
+  },
+
+}
+</script>
+
+
+
+<style>
+    .tren, .giua, .duoi {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: right;
+    }
+
+        th:first-child, td:first-child {
+            border-left: none;
+        }
+
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+    tr:first-child th, tr:first-child td {
+        border-top: none;
+    }
+
+    tr:last-child th, tr:last-child td {
+        border-bottom: none;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* 
+<div>
+    <h4>Booking</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Bài đăng
+        </dt>
+        <dd class="col-sm-10">
+            <div>
+                Id:
+                @Html.DisplayFor(model => model.Post.Id)
+            </div>
+            <div>
+                Name:
+                @Html.DisplayFor(model => model.Post.Name)
+            </div>
+        </dd>
+
+        <dt class = "col-sm-2">
+            Ngày nhận
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RecieveOn)
+        </dd>
+        <dt class = "col-sm-2">
+            Ngày trả
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ReturnOn)
+        </dd>
+        <dt class="col-sm-2">
+            Tổng cộng
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Total)
+        </dd>
+        <dt class = "col-sm-2">
+            Giảm giá
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Promotion.Content)
+        </dd>
+        <dt class="col-sm-2">
+            Thành tiền
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FinalValue)
+        </dd>
+        <dt class="col-sm-2">
+            Đặt cọc
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PrePayment)
+        </dd>
+        <dt class="col-sm-2">
+            Đã đặt cọc
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsPay)
+        </dd>
+    </dl>
+</div> *@
+<div>
+    <a href="javascript:history.go(-1);">Quay lại</a>
+</div>
