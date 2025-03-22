@@ -16,7 +16,18 @@ const infor = [
             name: "user-profile-mycar",
             component: () => import("../Views/Home/User/MyCar.vue"),
             meta: { requiresRole: "User" },
-            
+          },
+          {
+            path: "Driver",
+            name: "user-profile-driver",
+            component: () => import("../Views/Home/User/BookingDriver.vue"),
+            meta: { requiresRole: "Driver" },
+          },
+          {
+            path: "User",
+            name: "user-profile-user",
+            component: () => import("../Views/Home/User/BookingUser.vue"),
+            meta: { requiresRole: "User" },
           },
           {
             path: "VoucherList",

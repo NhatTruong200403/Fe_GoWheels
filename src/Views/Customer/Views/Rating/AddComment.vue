@@ -1,92 +1,125 @@
 ﻿<template>
-    <h2>Thêm bình luận:</h2>
-    <div class="row">
-      <div class="col-md-4">
-        <form @submit.prevent="submitComment" enctype="multipart/form-data">
-          <div class="form-group">
-            <label class="control-label">Bình luận</label>
-            <input v-model="content" class="form-control" />
-            <span class="text-danger" v-if="!content">Vui lòng nhập bình luận</span>
-          </div>
-          <div class="form-group">
-            <label class="control-label">Đánh giá</label>
-            <ul>
-              <li v-for="item in 5" :key="item">
-                <button type="button" @click="pick(item)" class="star-button">
-                  {{ item }} sao
-                  <img v-if="stars[item] === 0" width="26" height="26"
-                       src="https://img.icons8.com/metro/26/star.png" alt="star" />
-                  <img v-else width="26" height="26"
-                       src="https://img.icons8.com/fluency/48/star--v1.png" alt="star--v1" />
-                </button>
-              </li>
-            </ul>
-          </div>
-          <div class="form-group">
-            <input type="submit" value="Bình luận" class="btn btn-primary" />
-          </div>
-        </form>
-      </div>
+  <!-- <h2>Thêm bình luận:</h2> -->
+  <div class="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);padding: 20px 30px;border-radius: 15px;">
+    <div class="">
+      <form @submit.prevent="submitComment" enctype="multipart/form-data">
+        <div class="form-group">
+          <label class="control-label">Bình luận</label>
+          <input v-model="ratingDto.comment" class="form-control" required />
+        </div>
+        <div class="form-group">
+          <label class="control-label">Đánh giá</label>
+          <ul style="display: flex;">
+            <li v-for="item in 5" :key="item">
+              <button type="button" @click="pick(item)" class="star-button">
+                <!-- {{ item }}   -->
+                <img v-if="stars[item] === 0" width="26" height="26" src="https://img.icons8.com/metro/26/star.png"
+                  alt="star" />
+                <img v-else width="26" height="26" src="https://img.icons8.com/fluency/48/star--v1.png"
+                  alt="star--v1" />
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Bình luận" class="btn btn-primary" />
+        </div>
+      </form>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        stars: {
-          1: 0,
-          2: 0,
-          3: 0,
-          4: 0,
-          5: 0,
-        },
-        content: '', // Nội dung bình luận
-        selectedStars: 0, // Số sao người dùng đã chọn
-      };
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+import RatingDTO from '../../../../DTOs/RatingDto';
+
+export default {
+  props: {
+    id: {
+      type: Number,
+      default: 0,
+      required: true
     },
-    methods: {
-      // Hàm chọn sao
-      pick(selectedStar) {
-        this.selectedStars = selectedStar;
-        for (let i = 1; i <= 5; i++) {
-          this.stars[i] = i <= selectedStar ? 1 : 0; // Gán sao nhỏ hơn hoặc bằng selectedStar là 1, ngược lại là 0
-        }
+  },
+  data() {
+    return {
+      componentKey:0,
+      stars: {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
       },
-      // Hàm submit bình luận
-      submitComment() {
-        if (!this.content) {
-          alert("Vui lòng nhập nội dung bình luận");
-          return;
-        }
-        if (this.selectedStars === 0) {
-          alert("Vui lòng chọn số sao đánh giá");
-          return;
-        }
-        const formData = {
-          content: this.content,
-          stars: this.selectedStars,
-        };
-        console.log("Form data:", formData);
-        // Gửi dữ liệu bình luận và sao đánh giá tới server
-        // Bạn có thể thực hiện API call ở đây để submit form
-      },
+      ratingDto: new RatingDTO(),
+      selectedStars: 0, // Số sao người dùng đã chọn
+    };
+  },
+  methods: {
+    // Hàm chọn sao
+    pick(selectedStar) {
+      this.ratingDto.point = selectedStar;
+      for (let i = 1; i <= 5; i++) {
+        this.stars[i] = i <= selectedStar ? 1 : 0; // Gán sao nhỏ hơn hoặc bằng selectedStar là 1, ngược lại là 0
+      }
     },
-  };
-  </script>
-  
-  <style scoped>
-  /* Thêm chút styling để nút sao đẹp hơn */
-  .star-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
-  .star-button img {
-    vertical-align: middle;
-  }
-  </style>
-  
+    // Hàm submit bình luận
+    async submitComment() {
+      if (!this.ratingDto.comment) {
+        alert("Vui lòng nhập nội dung bình luận");
+        return;
+      }
+      if (this.ratingDto.point === 0) {
+        alert("Vui lòng chọn số sao đánh giá");
+        return;
+      }
+      this.ratingDto.postId = this.id;
+      const formData = new RatingDTO(this.ratingDto).toFormData();
+      const jsonData = {};
+      formData.forEach((value, key) => {
+        jsonData[key] = value;
+      });      
+      // const jsonData = JSON.stringify(formData);
+      console.log("Data gửi đi : ", jsonData);
+      const token = sessionStorage.getItem("authToken");
+      const response = await axios.post(
+        "http://localhost:5027/api/User/RatingAndComment/Add", JSON.stringify(jsonData),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Response trả về add comment: ",response);
+      if(response.status == 200){
+        if(response.data.success){
+          this.ratingDto = new RatingDTO(); 
+          this.stars = [0, 0, 0, 0, 0, 0];
+          this.$emit('GetAllRatings');
+        }
+      }
+
+      // Gửi dữ liệu bình luận và sao đánh giá tới server
+      // Bạn có thể thực hiện API call ở đây để submit form
+    },
+  },
+};
+</script>
+
+<style scoped>
+/* Thêm chút styling để nút sao đẹp hơn */
+.star-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.star-button img {
+  vertical-align: middle;
+}
+</style>
+
 
 
 

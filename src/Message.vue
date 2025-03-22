@@ -4,7 +4,7 @@
       <div class="toast-body">
         {{ message }}
       </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" @click="close">X</button>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" @click="close"></button>
     </div>
   </div>
   

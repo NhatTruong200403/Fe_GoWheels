@@ -3,7 +3,7 @@ import axios from "axios";
 const CarTypeService = {
   async getCompanies() {
     const response = await axios.get(
-      "https://localhost:7265/api/admin/Company/GetAll"
+      "http://localhost:5027/api/admin/Company/GetAll"
     );
     console.log(response.data);
     return response.data;
@@ -12,7 +12,7 @@ const CarTypeService = {
     const token = sessionStorage.getItem("authToken");
     const jsonData = JSON.stringify(cartypeDto);
     const response = await fetch(
-      "https://localhost:7265/api/admin/Cartype/Add",
+      "http://localhost:5027/api/admin/Cartype/Add",
       {
         method: "POST",
         headers: {
@@ -33,7 +33,7 @@ const CarTypeService = {
   },
   async getCartypeById(id) {
     const response = await axios.get(
-      `https://localhost:7265/api/admin/Cartype/GetByIdAsync/${id}`
+      `http://localhost:5027/api/admin/Cartype/GetById/${id}`
     );
     console.log(response);
     if (response.status !== 200) {
@@ -45,7 +45,7 @@ const CarTypeService = {
   async UpdateCarType(cartypeDto){
     const token = sessionStorage.getItem("authToken");
     const jsonData = JSON.stringify(cartypeDto);
-    const response = await fetch(`https://localhost:7265/api/admin/Cartype/Update/${cartypeDto.id}`, {
+    const response = await fetch(`http://localhost:5027/api/admin/Cartype/Update/${cartypeDto.id}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,

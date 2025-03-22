@@ -1,9 +1,16 @@
 const admin = [
   {
     path: "/admin",
-    component: () => import("../../Views/Views.vue"), // Component cha
+    component: () => import("../../Views/ViewAdminEmployee.vue"), // Component cha
     meta: { requiresRole: "Admin" },
     children: [
+      //Post
+      {
+        path: "postAdmin",
+        name: "admin-postAdmin",
+        component: () => import("../../Views/Admin/Views/Post/Index.vue"),
+        meta: { requiresRole: "Admin" },
+      },
       // Amenity
       {
         path: "amenity",
@@ -120,13 +127,15 @@ const admin = [
       {
         path: "reportType/create",
         name: "admin-reportType-create", // Đổi tên để tránh xung đột
-        component: () => import("../../Views/Admin/Views/ReportType/Create.vue"),
+        component: () =>
+          import("../../Views/Admin/Views/ReportType/Create.vue"),
         meta: { requiresRole: "Admin" },
       },
       {
         path: "reportType/detail/:id",
         name: "admin-reportType-detail", // Đổi tên để tránh xung đột
-        component: () => import("../../Views/Admin/Views/ReportType/Details.vue"),
+        component: () =>
+          import("../../Views/Admin/Views/ReportType/Details.vue"),
         meta: { requiresRole: "Admin" },
       },
       {
@@ -134,6 +143,25 @@ const admin = [
         name: "admin-reportType-edit", // Đổi tên để tránh xung đột
         component: () => import("../../Views/Admin/Views/ReportType/Edit.vue"),
         meta: { requiresRole: "Admin" },
+      },
+      {
+        path: "admin-user",
+        name: "admin-user", // Đổi tên để tránh xung đột
+        component: () => import("../../Views/Admin/Views/Customers/Index.vue"),
+        meta: { requiresRole: "Admin" },
+      },
+      {
+        path: "report",
+        name: "admin-employee-report",
+        component: () => import("../../Views/Employee/Views/Reports/Index.vue"),
+        meta: { requiresRole: ["Admin", "Employee"] }
+      },
+      {
+        path: "report/detail/:id",
+        name: "admin-report-detail", // Đổi tên để tránh xung đột
+        component: () =>
+          import("../../Views/Employee/Views/Reports/Details.vue"),
+        meta: { requiresRole: ["Admin", "Employee"] }
       },
     ],
   },

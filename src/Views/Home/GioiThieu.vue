@@ -1,4 +1,18 @@
-﻿<div class="contai">
+﻿<template>
+  
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style>
+
+</style>
+
+<div class="contai">
     <h1>Giới thiệu về công ty</h1>
     <section>
         <h2>1. Trách nhiệm của khách thuê xe và chủ xe trong giao dịch cho thuê xe tự lái</h2>

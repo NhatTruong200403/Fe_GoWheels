@@ -1,8 +1,10 @@
 // src/models/BookingVM.js
 
 import PostVM from './PostVM';
+import UserVM from './PostVM';
 import PromotionVM from './PromotionVM';
 import BaseModel from './BaseModelVM';
+import DriverVM from './DriverVM';
 export default class BookingVM extends BaseModel{
   constructor(data = {}) {
     super(data.id || null, data.createdById, data.createdOn, data.modifiedById, data.modifiedOn, data.isDeleted);
@@ -15,9 +17,12 @@ export default class BookingVM extends BaseModel{
     this.status = data.status || '';
     this.isRequest = data.isRequest || false;
     this.isResponse = data.isResponse || false;
+    this.longitude = data.longitude || null;
+    this.latitude = data.latitude || null;
     this.isPay = data.isPay || false;
-    this.userId = data.userId || '';
+    this.user = new UserVM(data.user || {});
     this.post = new PostVM(data.post || {});
     this.promotion = new PromotionVM(data.promotion || {});
+    this.driver = new DriverVM(data.driver || {});
   }
 }

@@ -11,8 +11,8 @@ const TokenService = {
       return localStorage.getItem('User');
     },
     removeToken() {
-      localStorage.removeItem('User');
-      localStorage.removeItem('auth_token');
+      sessionStorage.removeItem('User');
+      sessionStorage.removeItem('authToken');
     }
   };
   

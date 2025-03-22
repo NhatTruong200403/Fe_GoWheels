@@ -1,32 +1,13 @@
 ﻿<template>
     <Message ref="message" />
+    <div v-if="showMap == true" class="Login">
+        <MapV2 :show="showMap" @Close="Close" @Submit="Submit" />
+    </div>
     <div class="">
-        <!-- <div class="listvoucher">
-            <div class="modal-content">
-                <div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span
-                            class="sr-only"></span></button>
-                    <h5>Mã khuyến mãi</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="add-promotion">
-                        <div class="custom-input">
-                            <div class="wrap-input"><input type="text" placeholder="Nhập mã khuyến mãi"></div>
-                        </div>
-                        <div class="add-promotion__item ">
-                            <div class="wrap-svg"></div>
-                            <div class="promotion-info">
-                                <p class="name">MI75</p>
-                                <p>Giảm 8% (tối đa 80K). <span>Chi tiết</span></p>
-                            </div><a class="btn btn-primary">Áp dụng</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
         <div class="booking" style="padding:20px;" v-if="post != null">
             <div style="display: flex;gap: 20px;">
-                <h3 style="font-size:30px;" class="giagiam">{{ post.pricePerHour }}/Giờ</h3>
-                <h3 style="font-size:30px;" class="giagiam">{{ post.pricePerDay }}/Ngày</h3>
+                <h3 style="font-size:30px;" class="giagiam">{{ formatPrice(post.pricePerHour) }}/Giờ</h3>
+                <h3 style="font-size:30px;" class="giagiam">{{ formatPrice(post.pricePerDay) }}/Ngày</h3>
             </div>
             <form @submit.prevent="submitForm">
                 <div class="date-time-form">
@@ -42,6 +23,18 @@
                         <label v-else for="">Chưa chọn ngày</label>
                     </div>
                 </div>
+
+                <!-- Map -->
+                <div class="date-time-form">
+                    <div class="form-item" @click="showMap = true">
+                        <label for="startDate1">Vị trí nhận xe:</label>
+                        <label v-if="address != null" for="">{{ address }}</label>
+                        <label v-else>Chưa chọn vị trí</label>
+                    </div>
+                </div>
+
+
+
                 <div v-if="boolHour == true">
                     <!-- <div class="form-check">
                         <label class="form-check-label">
@@ -50,13 +43,14 @@
                             Đặt tài xế cho chuyến đi
                         </label>
                     </div> -->
-                    <div class="">
-                        <label class="circle-checkbox">
+                    <div style="display: flex;gap: 20px;"
+                        v-if="post.hasDriver == false && isDayMoreThan3(booking.recieveOn) == true">
+                        <label style="margin-left: 10px;" class="circle-checkbox">
                             <input type="checkbox" v-model="booking.isRequireDriver" id="Total"
                                 :checked="booking.isRequireDriver">
                             <span class="custom-circle"></span>
                         </label>
-                        <label for="">Đặt tài xế cho chuyến đi</label>
+                        <label style="margin-left: -10px;">Đặt tài xế cho chuyến đi</label>
                     </div>
                     <!-- <div class="form-group">
                         <label for="Total" class="control-label">Đặt tài xế cho chuyến đi</label>
@@ -64,34 +58,45 @@
                              />
                         <span for="Total" class="text-danger"></span>
                     </div> -->
-                    <div class="form-group">
+                    <div class="form-group priceBooking">
                         <label for="Total" class="control-label">Tổng cộng</label>
-                        <input v-model="booking.total" id="Total" class="form-control" readonly
-                            style="border:none;background-color:white;" />
-                        <span for="Total" class="text-danger"></span>
+                        <!-- <input v-model="booking.total" id="Total" class="form-control" readonly
+                            style="border:none;background-color:white;" /> -->
+                        <span for="Total" class="">{{ formatMoney(booking.total) }}đ</span>
                     </div>
                     <div class="form-group">
                         <label for="PromotionId" class="control-label">Khuyến mãi: </label>
                         <div class="khuyenmai" v-if="post.postPromotions && post.postPromotions.length > 0"
                             @click="ShowVouCherPost()" @change="userPromotion = 1">
-                            <div class="khuyenmai_trai">
-                                <label class="circle-checkbox">
+                            <div class="khuyenmai_trai z">
+                                <label class="circle-checkbox ">
                                     <input type="checkbox" disabled :checked="userPromotion == 1">
                                     <span class="custom-circle"></span>
                                 </label>
                                 <img width="30" height="30" src="../../../../assets/logoWeb/voucherDo.png"
                                     alt="discount-ticket" />
                             </div>
-                            <div class="khuyenmai_phai" v-if="post.postPromotionVMs != []">
-                                <label style="display: flex;" for="">
-                                    <div>Chương trình giảm giá</div>
+                            <div class="khuyenmai_phai" v-if="post.postPromotions != []">
+                                <label style="display: flex; justify-content: space-between;" for="">
+                                    <div style="margin-top: -5px;">Giảm giá của xe</div>
                                     <img style="width: 15px; height: 15px;"
                                         v-if="post.postPromotions && post.postPromotions.length >= 2"
+                                        :hidden="userKM == true"
                                         src="https://img.icons8.com/material-rounded/24/chevron-right.png"
                                         alt="chevron-right" />
+                                    <label class="x" v-if="userKM == true" @click.stop="XoaKM()">x</label>
                                 </label>
-                                <label>
-                                    <label for=""> Khuyến mãi 30% </label>
+                                <label v-if="userKM == true" class="sale"
+                                    style="display: flex;justify-content: space-between;">
+                                    <label v-if="promotion.discountValue < 1" for="" style="left: 0 !important;"> Khuyến
+                                        mãi
+                                        {{ promotion.discountValue * 100 }}%</label>
+                                    <label v-else for="" style="left: 0 !important;"> Khuyến mãi {{
+                                        format(promotion.discountValue) + "K" }}</label>
+                                    <label v-if="promotion.discountValue < 1">- {{ formatMoney(booking.total *
+                                        promotion.discountValue)
+                                        }}</label>
+                                    <label v-else>- {{ formatMoney(promotion.discountValue) }}</label>
                                 </label>
                             </div>
                             <div class="khuyenmai_phai" v-else>
@@ -102,8 +107,8 @@
                             </div>
                         </div>
                         <div class="khuyenmai" @change="userPromotion = 2" @click="ShowVouCherAdmin()">
-                            <div class="khuyenmai_trai">
-                                <label class="circle-checkbox">
+                            <div class="khuyenmai_trai z">
+                                <label class="circle-checkbox ">
                                     <input type="checkbox" disabled :checked="userPromotion == 2">
                                     <span class="custom-circle"></span>
                                 </label>
@@ -111,52 +116,54 @@
                                     alt="discount-ticket" />
                             </div>
                             <div class="khuyenmai_phai">
-                                <label v-if="userKMAd == false" style="display: flex;" for="">
-                                    <div>Chương trình giảm giá</div>
-                                    <img style="width: 15px; height: 15px;"
+                                <label style="display: flex; justify-content: space-between;" for="">
+                                    <div style="margin-top: -5px;">Chương trình giảm giá</div>
+                                    <img v-if="adminKM == false" style="width: 15px; height: 15px;"
                                         src="https://img.icons8.com/material-rounded/24/chevron-right.png"
                                         alt="chevron-right" />
+                                    <label class="x" v-else @click.stop="XoaKM()">x</label>
                                 </label>
-                                <label v-else style="display: flex;justify-content: space-between;">
+                                <!-- <label v-if="adminKM == true" class="sale" style="display: flex;justify-content: space-between;">
                                     <label v-if="promotion.discountValue < 1" for="" style="left: 0 !important;"> Khuyến
                                         mãi
-                                        {{ promotion.discountValue * 100 }}% <label
-                                            @click.stop="XoaKM()">x</label></label>
+                                        {{ promotion.discountValue * 100 }}%</label>
                                     <label v-else for="" style="left: 0 !important;"> Khuyến mãi {{
-                                        format(promotion.discountValue) + "K" }} <label
-                                            @click.stop="XoaKM()">x</label></label>
+                                        format(promotion.discountValue) + "K" }}</label>
                                     <label for="">200304</label>
+                                </label> -->
+                                <label v-if="adminKM == true" class="sale"
+                                    style="display: flex;justify-content: space-between;">
+                                    <label v-if="promotion.discountValue < 1" for="" style="left: 0 !important;"> Khuyến
+                                        mãi
+                                        {{ promotion.discountValue * 100 }}%</label>
+                                    <label v-else for="" style="left: 0 !important;"> Khuyến mãi {{
+                                        format(promotion.discountValue) + "K" }}</label>
+                                    <label v-if="promotion.discountValue < 1">- {{ formatMoney(booking.total *
+                                        promotion.discountValue)
+                                        }}</label>
+                                    <label v-else>- {{ formatMoney(promotion.discountValue) }}</label>
                                 </label>
                             </div>
 
                         </div>
-                        <!-- <div>
-                        <div>
-                            <input type="checkbox"> <img width="30" height="30"
-                                src="../../../../assets/logoWeb/voucherXanh.png" alt="discount-ticket" />
-                        </div>
-                        <div>
-                            <label for="">Khuyến mãi </label>
-                        </div>
-                    </div> -->
                     </div>
-                    <div class="form-group">
+                    <div class="form-group priceBooking">
                         <label asp-for="Total" class="control-label">Thành tiền</label>
-                        <input v-model="booking.finalValue" class="form-control" id="finalValue" readonly
-                            style="border:none;background-color:white;" />
-                        <span for="FinalValue" class="text-danger"></span>
+                        <!-- <input v-model="booking.finalValue" class="form-control" id="finalValue" readonly
+                            style="border:none;background-color:white;" /> -->
+                        <span for="FinalValue" class="">{{ formatMoney(booking.finalValue) }}đ</span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group priceBooking">
                         <label asp-for="Total" class="control-label">Đặt cọc</label>
-                        <input v-model="booking.prePayment" class="form-control" id="prePayment" readonly
-                            style="border:none;background-color:white;" />
-                        <span for="PrePayment" class="text-danger"></span>
+                        <!-- <input v-model="booking.prePayment" class="form-control" id="prePayment" readonly
+                            style="border:none;background-color:white;" /> -->
+                        <span for="PrePayment" class="">{{ formatMoney(booking.prePayment) }}đ</span>
                     </div>
-                    <div class="form-group" v-if="remaining > 0">
+                    <div class="form-group priceBooking" v-if="remaining > 0">
                         <label asp-for="Total" class="control-label">Còn lại </label>
-                        <input :value="remaining" class="form-control" id="prePayment"
-                            style="border:none;background-color:white;" readonly />
-                        <span for="PrePayment" class="text-danger"></span>
+                        <!-- <input :value="remaining" class="form-control" id="prePayment"
+                            style="border:none;background-color:white;" readonly /> -->
+                        <span for="PrePayment" class="">{{ formatMoney(remaining) }}đ</span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -178,9 +185,22 @@ import Message from '../../../../Message.vue';
 import PromotionService from '../../../../Service/api/PromotionService';
 import PostService from '../../../../Service/api/PostService';
 import BookingService from '../../../../Service/api/BookingService';
+import Map from '../../../Home/Map.vue';
+import MapV2 from '../../../Home/MapV2.vue';
+import MapService from '../../../../Service/api/MapService';
 export default {
     components: {
-        Message
+        Message, Map, MapV2
+    },
+    watch: {
+        showMap(newVal) {
+            // Thay đổi class của body khi login thay đổi
+            if (newVal == true) {
+                document.body.classList.add("no-scroll");
+            } else {
+                document.body.classList.remove("no-scroll");
+            }
+        },
     },
     props: {
         postId: {
@@ -198,16 +218,17 @@ export default {
             boolHour: false,
             sumhour: 0,
             userKMAd: false,
+            userKM: false,
+            adminKM: false,
             userPromotion: 0,
-            remaining: 0
+            remaining: 0,
+            showMap: false,
+            location: null,
+            address: null
         }
     },
     methods: {
         ToTal() {
-            //this.booking.total;// tổng tiền
-            //this.booking.finalValue; // sau khi trừ km
-            //this.booking.prePayment; // tiền cần cọc
-            //this.remaining; // còn lại
             if (this.post != []) {
                 if (this.sumhour % 24 == 0) {
                     this.booking.total = (this.sumhour / 24) * this.post.pricePerDay;
@@ -220,20 +241,20 @@ export default {
                         this.booking.finalValue = this.booking.total - this.promotion.discountValue;
                     }
                     else {
-                        this.booking.finalValue = this.booking.total * this.promotion.discountValue;
+                        this.booking.finalValue = this.booking.total * (1 - this.promotion.discountValue);
                     }
                 }
                 else {
                     this.booking.finalValue = this.booking.total;
                 }
+                this.booking.finalValue = Math.ceil(this.booking.finalValue);
                 this.booking.prePayment = this.booking.finalValue / 2;
-                this.remaining = this.booking.finalValue / 2;
+                this.remaining = this.booking.finalValue - this.booking.prePayment;
                 if (this.booking.finalValue < 0) {
                     this.booking.finalValue = 0;
                     this.booking.prePayment = 0;
                     this.remaining = 0;
                 }
-
             }
         },
 
@@ -246,11 +267,19 @@ export default {
             if (this.authen == false) {
                 this.open("Vui lòng đăng nhập để đặt xe")
             }
+            if (this.authen == true && this.booking.latitude == null || this.authen == true && this.booking.longitude == null) {
+                this.open("Vui lòng chọn vị trí nhận xe");
+            }
             if (this.boolHour !== false && this.authen !== false) {
                 //bắt đầu gửi đi 
                 const response = await BookingService.AddBooking(this.booking);
-                if(response.ok){
+                if (response.data == null) {
+                    this.open("Đặt xe không thành công");
+                }
+                if (response.data.success) {
                     this.open("Đặt xe thành công");
+                    console.log("Đặt xe thành công");
+                    this.$router.push({ name: 'user-profile-historyBooking' });
                 }
             }
         },
@@ -267,17 +296,23 @@ export default {
             this.booking.discountValue = this.promotion.discountValue;
             this.ToTal();
             if (bien == 2) {
-                this.userKMAd = true;
+                this.userKM = false;
+                this.adminKM = true;
+            }
+            else {
+                this.adminKM = false;
+                this.userKM = true;
             }
         },
         ShowVouCherPost() {
-            this.$emit('ShowVouCher', this.postId);
+            console.log("post từ create : ", this.postId);
+            this.$emit('ShowVouCher', this.postId, this.booking.total);
         },
         ShowVouCherAdmin() {
-            this.$emit('ShowVouCher', -1);
+            this.$emit('ShowVouCher', -1, this.booking.total);
         },
         // Nhận được ngày nhận và ngày trả
-        
+
         async getDayHour(start, end) {
             this.booking.recieveOn = start;
             this.booking.returnOn = end;
@@ -286,7 +321,7 @@ export default {
             const endDate = new Date(end);
             // Tính chênh lệch thời gian giữa hai ngày (theo milliseconds)
             const differenceInMilliseconds = endDate - startDate;
-            console.log("Diff: ",differenceInMilliseconds);
+            console.log("Diff: ", differenceInMilliseconds);
             // Chuyển đổi từ milliseconds sang giờ
             this.sumhour = differenceInMilliseconds / (1000 * 60 * 60);
             console.log("Sum hour: ", this.sumhour);
@@ -296,14 +331,32 @@ export default {
             this.hour = !this.hour;
             this.$emit('requestAction', this.hour);
         },
+        isDayMoreThan3(postDay) {
+            // Chuyển ngày truyền vào và ngày hiện tại thành đối tượng Date
+            const postDate = new Date(postDay);
+            const currentDate = new Date();
 
+            // Đặt thời gian của ngày hiện tại về đầu ngày (00:00:00) để so sánh chính xác
+            currentDate.setHours(0, 0, 0, 0);
+            postDate.setHours(0, 0, 0, 0);
+
+            // Tính số ngày chênh lệch
+            const diffTime = (postDate - currentDate); // Kết quả là mili giây
+            const diffDays = diffTime / (1000 * 60 * 60 * 24); // Chuyển sang ngày
+
+            console.log("Ngày truyền vào: ", postDay);
+            console.log("Số ngày chênh lệch: ", diffDays);
+
+            // Trả về true nếu số ngày chênh lệch lớn hơn 3
+            return diffDays >= 3;
+        },
 
         // lấy bài viết
         async fetchPost() {
             const id = this.$route.params.id;
             //console.log("Id của bài post: ", id);
             try {
-                const response = await axios.get(`https://localhost:7265/api/User/Post/GetByIdAsync/${id}`)
+                const response = await axios.get(`http://localhost:5027/api/User/Post/GetById/${id}`)
                 this.post = response.data.data;
             }
             catch (error) {
@@ -328,6 +381,8 @@ export default {
             this.promotion = null;
             this.userPromotion = 0;
             this.userKMAd = false;
+            this.userKM = false;
+            this.adminKM = false;
             this.booking.promotionId = null;
             this.booking.discountValue = 0;
             this.ToTal();
@@ -336,7 +391,29 @@ export default {
             if (price > 1) {
                 return price / 1000;
             }
-        }
+        },
+        formatMoney(value) {
+            return new Intl.NumberFormat('vi-VN').format(value);
+        },
+        formatPrice(price) {
+            if (price >= 1000000) {
+                return (price / 1000000).toFixed(1).replace('.0', '') + "Tr";
+            } else if (price >= 1000) {
+                return (price / 1000).toLocaleString('en').replace(/,/g, '.') + "k";
+            } else {
+                return price.toString();
+            }
+        },
+        async Submit(lat, lng, address) {
+            this.booking.latitude = lat;
+            this.booking.longitude = lng;
+            this.showMap = false;
+            this.address = address;
+            console.log("Address: ", address, "Lat: ", lat, "Lng: ", lng);
+        },
+        Close() {
+            this.showMap = false;
+        },
     },
     async created() {
         await this.fetchPost();
@@ -353,69 +430,73 @@ export default {
 </script>
 
 <style>
+.z {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    justify-items: center;
+}
+
 /* .listvoucher{
     position: absolute;
     width: 100%;
     height: 500px;
 } */
-
-
-.circle-checkbox input[type="checkbox"] {
-    display: none;
+.priceBooking {
+    display: flex;
+    justify-content: space-between;
 }
 
-/* Tạo một hình tròn */
-.circle-checkbox .custom-circle {
-    display: inline-block;
-    width: 24px;
-    /* Kích thước hình tròn */
-    height: 24px;
-    border-radius: 50%;
-    /* Tạo viền tròn */
-    border: 2px solid #000;
-    /* Viền của hình tròn */
+.sale {
+    padding-top: 5px;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    color: #434343;
+    font-size: .9rem;
+    font-weight: 500;
+    line-height: 16px;
+}
+
+.x {
+    color: #434343;
+}
+
+.x:hover {
+    color: #000;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
     cursor: pointer;
+    appearance: none;
+    /* Xóa mặc định */
+    border: 2px solid var(--color-green2);
+    background-color: transparent;
+    border-radius: 4px;
+    /* Làm góc bo tròn nếu cần */
     position: relative;
 }
 
-/* Hiệu ứng khi được chọn */
-.circle-checkbox input[type="checkbox"]:checked+.custom-circle {
-    background-color: #000;
+input[type="checkbox"]:checked {
+    background-color: var(--color-green2);
     /* Màu nền khi được chọn */
-    border-color: #000;
-    /* Đổi màu viền nếu cần */
+    /* Đường viền */
 }
 
-/* Thêm dấu check bên trong */
-.circle-checkbox input[type="checkbox"]:checked+.custom-circle::after {
-    content: '';
+input[type="checkbox"]:checked::before {
+    content: "✔";
+    /* Biểu tượng check */
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    /* Màu biểu tượng check */
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 10px;
-    /* Kích thước dấu check */
-    height: 10px;
-    background-color: #fff;
-    /* Màu của dấu check */
-    border-radius: 50%;
-    /* Dấu check cũng là hình tròn */
     transform: translate(-50%, -50%);
-    /* Căn giữa dấu check */
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -424,24 +505,23 @@ export default {
     width: 100%;
     height: 50px;
     display: flex;
+    align-items: center;
 }
 
 .khuyenmai_trai {
+    display: flex;
     padding: 10px 0;
     width: 20%;
 }
 
 .khuyenmai_trai img {
-    height: 30px !important;
+    margin-left: 5px;
+    margin-top: -5px;
+    height: 35px !important;
 }
 
 .khuyenmai_phai {
     padding: 10px;
     width: 80%;
 }
-
-
-
-
-.listvoucher {}
 </style>

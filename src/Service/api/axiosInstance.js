@@ -2,9 +2,11 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: "https://localhost:7265",
-  timeout: 10000,
+  baseURL: "http://localhost:5027",
+  
 });
+
+instance.urlImage = "http://localhost:5027/images/";
 
 instance.interceptors.response.use(
   response => response,

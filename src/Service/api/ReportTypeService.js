@@ -5,7 +5,7 @@ const ReportTypeService = {
         const token = sessionStorage.getItem('authToken');
         const formData = new ReportTypeDTO(reportType).toFormData();
         const response = await fetch(
-            "https://localhost:7265/api/admin/ReportType/Add",
+            "http://localhost:5027/api/admin/ReportType/Add",
             {
               method: "POST",
               headers: {
@@ -24,7 +24,7 @@ const ReportTypeService = {
           return response.json();
     },
     async GetAll() {
-        const response = await axios.get("https://localhost:7265/api/admin/ReportType/GetAll");
+        const response = await axios.get("http://localhost:5027/api/Admin/ReportType/GetAll");
         // console.log(response);
           if (response.status != 200) {
             const errorText = await response.text();
@@ -35,7 +35,7 @@ const ReportTypeService = {
           return response.data;
     },
     async GetById(id) {
-        const response = await axios.get(`https://localhost:7265/api/admin/ReportType/GetByIdAsync/${id}`);
+        const response = await axios.get(`http://localhost:5027/api/admin/ReportType/GetById/${id}`);
           if (response.status != 200) {
             const errorText = await response.text();
             throw new Error(

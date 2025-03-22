@@ -6,8 +6,8 @@
     <h1>Thêm tiện nghi</h1>
     <h4>Điền thông tin</h4>
     <hr />
-    <div class="row">
-        <div class="col-md-4">
+    <div >
+        <div >
             <form @submit.prevent="submitForm" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="amenityName" class="control-label">Tên tiện nghi</label>
@@ -55,9 +55,9 @@ export default {
                 });
                 console.log('Dữ liệu đã được gửi thành công:', result);
                 this.$router.push({ name: 'admin-amenity' });
-                alert('Tiện nghi đã được tạo thành công.');
+                // alert('Tiện nghi đã được tạo thành công.');
             } catch (error) {
-                alert('Có lỗi xảy ra: ' + error.message);
+                // alert('Có lỗi xảy ra: ' + error.message);
             }
         }
     }

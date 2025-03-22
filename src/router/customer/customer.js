@@ -3,7 +3,56 @@ const user = [
     path: "/customer",
     component: () => import("../../Views/ViewsUser.vue"),
     children: [
+      
+      {
+        path: "chart",
+        name: "chart-invoice",
+        component: () => import("../../Views/Customer/Views/Chart/Chart.vue"),
+        meta: { requiresRole: 'User' }
+      },
+      {
+        path: "dieukhoan",
+        name: "dieukhoan",
+        component: () => import("../../Views/Home/DieuKhoan.vue"),
+        // meta: { requiresRole: 'User' }
+      },
+      {
+        path: "chinhsach",
+        name: "chinhsach",
+        component: () => import("../../Views/Home/Chinhsach.vue"),
+        // meta: { requiresRole: 'User' }
+      },
       //Post
+      {
+        path: "post-search",
+        name: "post-search",
+        component: () => import("../../Views/Home/ViewDemo.vue"),
+        // meta: { requiresRole: 'User' }
+      },
+      {
+        path: "infor:userId?",
+        name: "user-infor",
+        component: () => import("../../Views/Home/FindUser.vue"),
+        // meta: { requiresRole: 'User' }
+      },
+      {
+        path: "chinhsach",
+        name: "chinhsach",
+        component: () => import("../../Views/Home/Chinhsach.vue"),
+        // meta: { requiresRole: 'User' }
+      },
+      {
+        path: "dieukhoan",
+        name: "dieukhoan",
+        component: () => import("../../Views/Home/DieuKhoan.vue"),
+        // meta: { requiresRole: 'User' }
+      },
+      {
+        path: "gioithieu",
+        name: "gioithieu",
+        component: () => import("../../Views/Home/GioiThieu.vue"),
+        // meta: { requiresRole: 'User' }
+      },
       {
         path: "chatbox",
         name: "user-chatbox",
@@ -20,19 +69,19 @@ const user = [
         path: "post/create",
         name: "user-post-create",
         component: () => import("../../Views/Customer/Views/Posts/Create.vue"),
-        
+        meta: { requiresRole: 'User' }
       },
       {
-        path: "post/detail:id",
+        path: "post/detail:id?",
         name: "user-post-detail",
         component: () => import("../../Views/Customer/Views/Posts/Details.vue"),
         
       },
       {
-        path: "post/edit:id",
+        path: "post/edit:id?",
         name: "user-post-edit",
         component: () => import("../../Views/Customer/Views/Posts/Edit.vue"),
-        
+        meta: { requiresRole: 'User' }
       },
       //Booking
       {
@@ -50,7 +99,7 @@ const user = [
         meta: { requiresRole: "User" },
       },
       {
-        path: "booking/detail:id",
+        path: "booking/detail:id?",
         name: "user-booking-detail",
         component: () =>
           import("../../Views/Customer/Views/Bookings/Details.vue"),
@@ -78,7 +127,7 @@ const user = [
       //     component: ()=> import("../../Views/Customer/Views/Invoices/Create.vue"),
       // },
       {
-        path: "invoices/detail:id",
+        path: "invoices/detail:id?",
         name: "user-invoices-detail",
         component: () =>
           import("../../Views/Customer/Views/Invoices/Details.vue"),
@@ -105,14 +154,14 @@ const user = [
         meta: { requiresRole: "User" },
       },
       {
-        path: "notification/detail:id",
+        path: "notification/detail:id?",
         name: "user-notification-detail",
         component: () =>
           import("../../Views/Customer/Views/Notification/Details.vue"),
         meta: { requiresRole: "User" },
       },
       {
-        path: "notification/edit:id",
+        path: "notification/edit:id?",
         name: "user-notification-edit",
         component: () =>
           import("../../Views/Customer/Views/Notification/Edit.vue"),

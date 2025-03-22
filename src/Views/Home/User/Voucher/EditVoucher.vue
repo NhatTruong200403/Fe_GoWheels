@@ -39,7 +39,7 @@
     </div>
 
     <div>
-        <a href="javascript:history.go(-1);">Quay lại</a>
+        <a @click="this.$emit('Close')">Quay lại</a>
     </div>
 </template>
 
@@ -63,8 +63,9 @@ export default {
     methods: {
         async getPromotion() {
             try {
-                const response = await PostPromotionService.getPromotion(this.Id);
+                const response = await PostPromotionService.getPromotionbyUser(this.Id);
                 this.promotion = response.data;
+                console.log(response);
             }
             catch (error) {
                 console.log(error);
@@ -96,6 +97,7 @@ export default {
         }
     },
     created() {
+        console.log(this.Id);
         this.getPromotion();
     },
 }

@@ -88,7 +88,7 @@ export default {
             const token = sessionStorage.getItem("authToken");
             try{
                 const response = await axios.get(
-                `https://localhost:7265/api/AdminPromotion/GetAll`, {
+                `http://localhost:5027/api/AdminPromotion/GetAllAdminPromotion`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -114,6 +114,41 @@ td .a {
     border-radius: 5px;
     background-color: olivedrab;
 }
+ .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-block: 15px;
+}
+
+    .table td {
+        margin-left:15px;
+        border: 1px solid #ddd;
+        padding: 13px;
+        text-align: left;
+        border: 1px solid #ccc;
+    }
+
+    .table th {
+        text-align:center;
+        background-color: #ccffcc;
+    }
+
+    .table tr:nth-child(1) td {
+        font-weight: bold;
+        padding: 10px;
+    }
+tbody tr {
+    border: 1px solid #ccc; 
+}
+
+    tbody tr td {
+        padding: 10px; 
+    }
+a {
+    text-decoration: none;
+    color: black;
+    margin-inline:15px;
+} 
 </style>
 <!-- 
 <form asp-controller="Promotions" class="FormSearch dropdown" asp-action="Index" method="get" style="">

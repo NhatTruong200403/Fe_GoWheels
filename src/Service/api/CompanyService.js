@@ -3,7 +3,7 @@ import axios from "axios";
 const CompanyService = {
   async getCarTypies() {
     const response = await axios.get(
-      "https://localhost:7265/api/admin/Cartype/GetAll"
+      "http://localhost:5027/api/admin/Cartype/GetAll"
     );
     console.log(response.data);
     return response.data;
@@ -12,7 +12,7 @@ const CompanyService = {
     const formData = new CompanyDto(companyDto).toFormData();
     const token = sessionStorage.getItem("authToken");
     const response = await fetch(
-      "https://localhost:7265/api/admin/Company/Add",
+      "http://localhost:5027/api/admin/Company/Add",
       {
         method: "POST",
         headers: {
@@ -32,7 +32,7 @@ const CompanyService = {
   },
   async getCompanyById(id) {
     const response = await axios.get(
-      `https://localhost:7265/api/admin/Company/GetByIdAsync/${id}`
+      `http://localhost:5027/api/admin/Company/GetById/${id}`
     );
     console.log(response);
     if (response.status !== 200) {
@@ -45,7 +45,7 @@ const CompanyService = {
     const formData = new CompanyDto(companyDto).toFormData();
     console.log(formData);
     const token = sessionStorage.getItem("authToken");
-    const response = await fetch(`https://localhost:7265/api/admin/Company/Update/${companyDto.id}`, {
+    const response = await fetch(`http://localhost:5027/api/admin/Company/Update/${companyDto.id}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,

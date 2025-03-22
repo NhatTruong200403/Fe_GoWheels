@@ -35,7 +35,7 @@
                     {{ item.name }}
                 </td>
                 <td>
-                    <img width="200px" :src="item.iconImage">
+                    <img width="100px" :src="'http://localhost:5027/'+item.iconImage">
                 </td>
                 <td>
                     {{ item.createdById }}

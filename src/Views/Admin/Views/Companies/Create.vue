@@ -7,8 +7,8 @@
     <h1>Thêm mới hãng xe</h1>
 
     <hr />
-    <div class="row">
-        <div class="col-md-4">
+    <div >
+        <div >
             <form @submit.prevent="submitForm" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="companyName" class="control-label">Tên hãng xe</label>

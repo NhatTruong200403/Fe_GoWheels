@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DoAnCNTT.Models.Booking>
+﻿<!-- @model IEnumerable<DoAnCNTT.Models.Booking>
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @{
@@ -127,4 +127,4 @@
     @* .duoi {
         display: flex;
         justify-content: flex-end;
-    }  *@
+    }  *@ -->

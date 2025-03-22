@@ -10,7 +10,7 @@ export default class RatingDTO {
 
   toFormData() {
       const formData = new FormData();
-      if (this.id !== null) {  // Kiểm tra xem `id` có khác null không
+      if (this.id !== 0) {  // Kiểm tra xem `id` có khác null không
         formData.append("Id", this.id);
     }
       formData.append("Comment", this.comment);

@@ -13,5 +13,11 @@ export default class FavoriteDTO {
       formData.append("PostId", this.postId); 
       return formData;
     }
+    toJSON() {
+      return {
+        // id: this.id,
+        postId: this.postId,
+      };
+    }
   }
   

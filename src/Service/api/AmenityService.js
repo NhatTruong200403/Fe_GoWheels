@@ -6,7 +6,7 @@ const AmenityService = {
     const token = sessionStorage.getItem("authToken");
 
     const response = await fetch(
-      "https://localhost:7265/api/admin/Amenity/Add",
+      "http://localhost:5027/api/admin/Amenity/Add",
       {
         method: "POST",
         headers: {
@@ -31,7 +31,7 @@ const AmenityService = {
     console.log(id);
     // Sử dụng fetch để đồng bộ với phương thức addAmenity
     const response = await fetch(
-      `https://localhost:7265/api/admin/Amenity/GetByIdAsync/${id}`,
+      `http://localhost:5027/api/admin/Amenity/GetById/${id}`,
       {
         method: "GET",
         headers: {
@@ -58,7 +58,7 @@ const AmenityService = {
     const token = sessionStorage.getItem("authToken");
 
     const response = await fetch(
-        `https://localhost:7265/api/admin/Amenity/Update/${id}`,
+        `http://localhost:5027/api/admin/Amenity/Update/${id}`,
         {
           method: "PUT",
           headers: {

@@ -24,7 +24,7 @@
             </tr>
         </thead>
 
-        <tbody v-if="drives.length > 0">
+        <tbody v-if="drive != null">
             <tr>
                 <td>
                     {{ drive.name }}
@@ -36,14 +36,14 @@
                     {{ drive.phoneNumber }}
                 </td>
                 <td>
-                    <img :src="'https://localhost:7265/'+drive.cic" alt="">
+                    <img width="300px" :src="'http://localhost:5027/'+drive.cic" alt="">
                 </td>
                 <td>
-                    <img :src="'https://localhost:7265/'+drive.license" alt="">
+                    <img width="300px" :src="'http://localhost:5027/'+drive.license" alt="">
                 </td>
                 <td>
-                    <button @click="SubmitDriver(true)">Xác nhận</button>
-                    <button @click="SubmitDriver(false)">Không</button>
+                    <button class="" @click="SubmitDriver(true)">Xác nhận</button>
+                    <button class="" @click="SubmitDriver(false)">Không</button>
                 </td>
             </tr>
         </tbody>
@@ -66,22 +66,6 @@ export default {
         }
     },
     methods: {
-        // async SubmitDriver(bien){
-        //     // ExamineDriverSubmit
-        //     const formData = new FormData();
-        //     formData.append("userId", this.drive.id);
-        //     formData.append("isAccept", bien);
-        //     const token = sessionStorage.getItem("authToken");
-        //     const response = await axios.post(`https://localhost:7265/api/ManageUser/ExamineDriverSubmit/${this.drive.id}`, {
-        //         headers: {
-        //             Authorization: `Bearer ${token}`,
-        //         },
-        //         body: formData
-        //     });
-        //     console.log(response);
-        //     this.drives = response.data.data;
-
-        // },
         async SubmitDriver(bien) {
             try {
                 // Tạo formData để truyền dữ liệu
@@ -91,14 +75,8 @@ export default {
 
                 // Lấy token từ sessionStorage
                 const token = sessionStorage.getItem("authToken");
-                if (!token) {
-                    console.error("Token không tồn tại");
-                    return;
-                }
-
-                // Gọi API với cấu trúc chính xác
                 const response = await axios.post(
-                    `https://localhost:7265/api/ManageUser/ExamineDriverSubmit/${this.drive.id}`,
+                    `http://localhost:5027/api/ManageUser/ExamineDriverSubmit`,
                     formData, // Form data là tham số thứ hai
                     {
                         headers: {
@@ -106,14 +84,12 @@ export default {
                         }
                     }
                 );
-
-                console.log("Phản hồi từ server:", response);
-                this.drives = response.data.data;
+                console.log("Response Submit: ",response);
+                if(response.status == 200){
+                    this.$router.push({ name: 'employee-driver' });
+                }
             } catch (error) {
                 console.error("Lỗi khi gọi API:", error);
-                if (error.response && error.response.status === 401) {
-                    console.error("Lỗi 401: Unauthorized - Vui lòng kiểm tra lại token xác thực.");
-                }
             }
         },
 
@@ -121,7 +97,7 @@ export default {
             const id = this.$route.params.id;
             console.log(id);
             const token = sessionStorage.getItem("authToken");
-            const response = await axios.get('https://localhost:7265/api/ManageUser/GetAllDriverSubmit', {
+            const response = await axios.get('http://localhost:5027/api/ManageUser/GetAllDriverSubmit', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -36,7 +36,7 @@
                     {{ item.name }}
                 </td>
                 <td>
-                    <img :src="item.image" alt="hinhanh.jpg" width="200px" />
+                    <img :src="'http://localhost:5027/' +item.image" alt="hinhanh.jpg" width="200px" />
                 </td>
                 <td>
                     {{ item.description }}

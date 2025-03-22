@@ -1,4 +1,6 @@
-﻿<div class="contai">
+﻿<template>
+  
+<div class="contai">
     <h1>Điều khoản dịch vụ</h1>
     <section>
         <h2>1. Trách nhiệm của khách thuê xe và chủ xe trong giao dịch cho thuê xe tự lái</h2>
@@ -32,3 +34,14 @@
         <p>...</p>
     </section>
 </div>
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style>
+
+</style>

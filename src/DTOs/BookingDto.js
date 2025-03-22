@@ -6,6 +6,8 @@ export default class BookingDTO {
     this.prePayment = data.prePayment || 0;
     this.total = data.total || 0;
     this.finalValue = data.finalValue || 0;
+    this.longitude = data.longitude || null; // Date
+    this.latitude = data.latitude || null; // Date
     this.recieveOn = data.recieveOn || null; // Date
     this.returnOn = data.returnOn || null; // Date
     this.postId = data.postId || 0;
@@ -29,6 +31,8 @@ export default class BookingDTO {
     if (this.returnOn) {
       formData.append("ReturnOn", this.returnOn);
     }
+    formData.append("Longitude", this.longitude);
+    formData.append("Latitude", this.latitude);
     formData.append("PostId", this.postId);
     // formData.append("PromotionId", this.promotionId);
     if (this.promotionId !== null) {
@@ -39,5 +43,21 @@ export default class BookingDTO {
     formData.append("IsRequireDriver", this.isRequireDriver);
 
     return formData;
+  }
+  toJSON() {
+    return {
+      id: this.id,
+      prePayment: this.prePayment,
+      total: this.total,
+      finalValue: this.finalValue,
+      recieveOn: this.recieveOn,
+      returnOn: this.returnOn,
+      longitude: this.longitude.toString(),
+      latitude: this.latitude.toString(),
+      isRequireDriver: this.isRequireDriver,
+      postId: this.postId,
+      promotionId: this.promotionId,
+      discountValue: this.discountValue,
+    };
   }
 }

@@ -6,8 +6,8 @@
     <h1>Thêm loại xe</h1>
     <h4>Điền thông tin</h4>
     <hr />
-    <div class="row">
-        <div class="col-md-4">
+    <div >
+        <div >
             <form @submit.prevent="submitForm" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">

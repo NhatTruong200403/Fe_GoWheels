@@ -5,7 +5,7 @@ const FavoriteService = {
   async getAllFavorite() {
     const token = sessionStorage.getItem("authToken");
     const response = await axios.get(
-      `https://localhost:7265/api/User/Favorite/GetAllFavorite`,
+      `http://localhost:5027/api/User/Favorite/GetAllFavorite`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -17,16 +17,19 @@ const FavoriteService = {
 
   async addFavorite(Data) {
     const token = sessionStorage.getItem("authToken");
-    const formData = new FavoriteDTO(Data).toFormData();
+    const favorite = new FavoriteDTO(Data);
+        const jsonData = favorite.toJSON();
     const response = await axios.post(
-      `https://localhost:7265/api/User/Favorite/AddToFavorite`,
-      formData,
+      `http://localhost:5027/api/User/Favorite/AddToFavorite`,
+      jsonData,
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       }
     );
+    console.log(response);
     if (!response.success) {
         console.log(response);
     }
@@ -36,7 +39,7 @@ const FavoriteService = {
   async DeleteFavorite(id) {
     const token = sessionStorage.getItem("authToken");
     const response = await axios.delete(
-      `https://localhost:7265/api/User/Favorite/RemoveFavorite/${id}`,
+      `http://localhost:5027/api/User/Favorite/RemoveFavorite/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -39,7 +39,7 @@
                     {{ item.name }}
                 </td>
                 <td>
-                    <img :src="item.iconImage" alt="hinhanh.jpg" width="200px" />
+                    <img :src="'http://localhost:5027/'+item.iconImage" alt="hinhanh.jpg" width="200px" />
                 </td>
                 <td>
                     {{ item.createdById }}
@@ -98,7 +98,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+    
+</style>
 <!-- 
 <script>
     document.onready

@@ -1,81 +1,107 @@
-﻿@model IList<DoAnCNTT.Models.ApplicationUser>
+﻿<template>
 
-@{
-    ViewData["Title"] = "Danh sách khách hàng";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<h1>Danh sách khách hàng</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Khách hàng
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                SĐT
-            </th>
-            <th>
-                Báo cáo
-            </th>
-            <th>
-                Ngày sinh
-            </th>
-            <th>
-                Thời gian khóa
-            </th>
-            <th>
-                Thao tác
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <h1>Danh sách người dùng</h1>
+    <table class="table">
+        <thead>
             <tr>
+                <th>
+                    Khách hàng
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    SĐT
+                </th>
+                <th>
+                    Báo cáo
+                </th>
+                <th>
+                    Ngày sinh
+                </th>
+                <th>
+                    Thời gian khóa
+                </th>
+                <th>
+                    Thao tác
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="item in users" :key="item">
                 <td>
-                    <a asp-area="Admin" asp-controller="Customers" asp-action="Details" asp-route-id="@item.Id"><img class="user-img-home" src="@Url.Content(item.Image)" alt="Image" />@item.Name</a>
+                    <a @click="this.$router.push({ name: 'user-infor', params: { userId: item.id } })"><img
+                            class="user-img-home" style="width: 50px;height: 50px;object-fit: cover;margin-right: 10px;" :src="`http://localhost:5027/` + item.image" alt="Image" />{{
+                                item.name
+                        }}</a>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Email)
+                    {{ item.email }}
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    {{ item.phoneNumber }}
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ReportPoint)
+                    {{ item.reportPoint }}
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Birthday)
+                    {{ item.birthday }}
                 </td>
-
-                @{
-                    if (item.LockoutEnd > DateTime.Now)
-                    {
-                        <td>
-                            @item.LockoutEnd.Value.ToString("dd/MM/yyyy HH:mm")
-                        </td>
-
-                        <td>
-                            <a asp-area="Admin" asp-controller="Customers" asp-action="UnlockAccount" asp-route-userId="@item.Id">Mở khóa</a>
-                        </td>
-                    }
-                    else
-                    {
-                        <td>
-                        </td>
-
-                        <td>
-                            <a asp-area="Admin" asp-controller="Customers" asp-action="LockAccount" asp-route-userId="@item.Id">Khóa tài khoản</a>
-                        </td>
-                    }
-                }
+                <td v-if="item.lockoutEnd > Date.now">
+                    {{ item.lockoutEnd }}
+                </td>
+                <td v-else></td>
+                <td v-if="item.lockoutEnd > Date.now">
+                        <a @click="Submit(item.id)">Mở khóa</a>
+                </td>
+                
+                <td v-else>
+                    <a @click="Submit(item.id)">Khóa tài khoản</a>
+                </td>
 
             </tr>
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</template>
 
+<script>
+import UserVM from '../../../../Model/UserVM';
+import axios from 'axios';
+
+export default {
+
+
+    data() {
+        return {
+            users: [new UserVM()]
+        }
+    },
+    methods: {
+        async getAllUser() {
+            const token = sessionStorage.getItem("authToken");
+            const response = await axios.get('http://localhost:5027/api/ManageUser/GetAllUser', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log(response);
+            this.users = response.data.data;
+        },
+        async Submit(userId) {
+            const token = sessionStorage.getItem("authToken");
+            const response = await axios.put(`http://localhost:5027/api/ManageUser/LockUserAccount/${userId}`,userId, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log("Response trả về report: ",response);
+        }
+    },
+
+    async created() {
+        await this.getAllUser();
+    },
+}
+</script>
+
+<style></style>

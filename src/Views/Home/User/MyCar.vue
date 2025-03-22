@@ -1,91 +1,73 @@
 <template>
 
-    <h1 v-if="checkBooking != true">Danh sách bài đăng của bạn</h1>
-    <h1 v-else>Danh sách yêu cầu thuê xe</h1>
-    <button @click="checkBooking = !checkBooking; console.log(checkBooking);">Yêu cầu thuê xe</button>
-    <BookingPening v-if="checkBooking == true" />
-    <table class="table" v-else>
-        <thead>
-            <tr>
-                <th>
-                    Tên
-                </th>
-                <th>
-                    Hình ảnh
-                </th>
-                <th>
-                    Mô tả
-                </th>
-                <th>
-                    Địa chỉ nhận
-                </th>
-                <th>
-                    Có tài xế
-                </th>
-                <th>
-                    Giá
-                </th>
-                <th>
-                    Hộp số
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="item in posts" :key="item.id">
-                <td>
-                    {{ item.name }}
-                </td>
-                <td>
-                    <img :src="item.image" alt="hinhanh.jpg" width="200px" />
-                </td>
-                <td>
-                    {{ item.description }}
+    <div class="containerFa">
+        <div class="child" v-if="checkBooking != true">
+            <h1>Danh sách bài đăng của bạn</h1> <button class="btn nutshort" style="display: flex;" @click="checkBooking = !checkBooking;">
+                 <label>Yêu cầu thuê xe</label> <i v-if="isPending > 0" style="display: block;width: 20px;height: 20px;font-size: 12px;border-radius: 50%;background-color: red;align-content: center;margin-top: 3px;margin-left: 10px;color: azure;">{{ isPending }}</i> </button>
+        </div>
+        <div class="child" v-else>
+            <h1>Danh sách yêu cầu thuê xe </h1><button class="btn nutshort" @click="checkBooking = !checkBooking;">Danh
+                sách xe</button>
+        </div>
 
-                </td>
-                <td>
-                    {{ item.rentLocation }}
-
-                </td>
-                <td>
-                    {{ item.hasDriver }}
-
-                </td>
-                <td>
-                    {{ item.price }}
-
-                </td>
-                <td>
-
-                    <text v-if="item.Gear">Số tự động</text>
+        <button v-if="checkBooking != true" class="btn nutshort" style="margin-bottom: 20px;"
+            @click="this.$router.push({ name: 'user-post-create' });">Tạo bài đăng</button>
 
 
-                    <text v-else>Số sàn</text>
+        <BookingPening v-if="checkBooking == true" />
 
-                </td>
-                <td>
+        <div class="containerPost1" v-else>
+            <router-link :to="{ name: 'user-post-detail', params: { id: item.id } }" class="box postcar"
+                v-for="item in posts" :key="item.id">
+                <div class="pta" style="width: 280px;height:180px; overflow: hidden;">
+                    <img :src="'http://localhost:5027/' + item.image" :alt="item.image"
+                        style="object-fit: cover; width: 100%; height: 100%;box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);" />
+                </div>
+                <div class="ptb">
+                    <div v-if="item.gear" class="ptb1 apt" style="padding:2px 4px;">Số tự động</div>
+                    <div v-else class="ptb1 apt" style="padding:2px 4px;background-color:darkkhaki;">Số sàn
+                    </div>
+                </div>
 
-                    <li v-if="item.id">
-                        <router-link :to="{ name: 'user-post-edit', params: { id: item.id } }">
-                            <button>
-                                Chỉnh sửa {{ item.id }}
-                            </button>
-                        </router-link>
-                    </li>
-                    <li v-if="item.id">
-                        <router-link :to="{ name: 'user-post-detail', params: { id: item.id } }">
-                            <button>
-                                Chi tiết {{ item.id }}
-                            </button>
-                        </router-link>
-                    </li>
+                <div class="ptc">
+                    <a style="cursor: pointer;" asp-area="Customer" asp-controller="Posts" asp-action="Details"
+                        asp-route-id="@item.Id">{{ item.name }}</a>
+                </div>
+                <div class="ptd">
+                    <img src="/src/assets/logoWeb/road-map-line.svg" class="icon_map" alt="">
+                    <span class="text_map">{{ item.rentLocation }}</span>
+                </div>
+                <hr>
+                <div class="pte">
+                    <div class="pte_left">
+                        <!-- @* Chưa xong *@ -->
+                        <div class="dgsao">
+                            <img src="/src/assets/logoWeb/star-s-fill.svg" class="icon_sao_danhgia" alt="">
+                            <span class="text_saodanhgia">{{ formatDecimal(item.avgRating, 1) }}</span>
+                        </div>
+
+                        <div v-if="item.rideNumber > 0" class="sochuyen">
+                            <img src="/src/assets/logoWeb/luggage-cart-line.svg" class="icon_map" alt="">
+                            <div class="text_sochuyen">{{ item.rideNumber }} chuyến</div>
+                        </div>
+
+                        <div v-else class="sochuyen">
+                            <div class="text_sochuyen">Chưa có chuyến</div>
+                        </div>
 
 
-                </td>
-            </tr>
+                    </div>
+                    <div class="pte_right">
+                        <div class="giagiam">{{ formatPrice(item.pricePerHour) }}/giờ</div>
+                        <div class="giagiam">{{ formatPrice(item.pricePerDay) }}/ngày</div>
+                    </div>
+                </div>
+            </router-link>
 
-        </tbody>
-    </table>
+        </div>
+
+
+    </div>
 
 </template>
 
@@ -99,7 +81,9 @@ export default {
     data() {
         return {
             posts: [],
-            checkBooking: false
+            checkBooking: false,
+            isPending: 0,
+            bookingPending:[]
         }
     },
     methods: {
@@ -111,15 +95,38 @@ export default {
                     this.posts = response.data;
                     console.log(this.posts);
                 }
-
             }
             catch (error) {
                 console.error('Lỗi lấy dữ liệu:', error);
             }
         },
-        CheckBooking(){
-
-        }
+        formatPrice(price) {
+            if (price >= 1000000) {
+                return (price / 1000000).toFixed(1).replace('.0', '') + "Tr";
+            } else if (price >= 1000) {
+                return (price / 1000).toLocaleString('en').replace(/,/g, '.') + "k";
+            } else {
+                return price.toString();
+            }
+        },
+        formatDecimal(number, decimalPlaces) {
+            const factor = Math.pow(10, decimalPlaces);
+            return Math.ceil(number * factor) / factor;
+        },
+        async CheckBooking(){
+            this.checkBooking = !this.checkBooking;
+            try{
+                const response = await BookingService.GetAllPenDing();    
+                if(response.data.length > 0){
+                    this.isPending = response.data.length;
+                }           
+                console.log(response.data);
+            }
+            catch(error){
+                console.log("Lỗi lấy dữ liệu: ",error);
+            }
+            console.log("hehe",this.checkBooking);
+        },
     },
     created() {
         this.getPost();
@@ -128,7 +135,16 @@ export default {
 </script>
 
 
-<style></style>
+<style>
+.containerFa {
+    padding: 20px 30px;
+}
+
+.containerFa .child {
+    display: flex;
+    justify-content: space-between;
+}
+</style>
 
 
 

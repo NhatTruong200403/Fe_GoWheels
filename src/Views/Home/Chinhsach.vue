@@ -1,5 +1,5 @@
-﻿
-<div class="contai">
+﻿<template>
+  <div class="contai">
     <h1>Chính sách & Quy định</h1>
     <section>
         <h2>1. Trách nhiệm của khách thuê xe và chủ xe</h2>
@@ -173,4 +173,16 @@
     </section>
 
   </div>
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style>
+
+</style>
+
 

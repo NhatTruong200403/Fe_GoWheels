@@ -1,6 +1,6 @@
 <template>
     <div style="margin-bottom:20px;">
-        <button @click="QuayLai()">Quay lại</button>
+        <button class="btn nutshort" style="width: 200px;" @click="QuayLai()">Quay lại</button>
     </div>
 
     <h1>Thêm mới khuyến mãi</h1>
@@ -16,7 +16,7 @@
                 </div>
                 <div class="form-group">
                     <label for="DiscountValue" class="control-label">Giá trị khuyến mãi</label>
-                    <input v-model.number="promotion.discountValue" type="number" step="0.01" min="0.01" max="1"
+                    <input v-model.number="promotion.discountValue" type="number" step="0.01" min="0.01"
                         class="form-control" />
                     <span for="DiscountValue" class="text-danger"></span>
                 </div>
@@ -33,7 +33,7 @@
                     <label for="ExpiredDate" class="control-label">Các bài đăng được sử dụng</label>
                     <ul v-if="post != null">
                         <li v-for="item in post" :key="item.id">
-                            <div class="form-check">
+                            <div class="form-check" v-if="item.isDisabled !== true">
                                 <input class="form-check-input car-type-checkbox" type="checkbox" :value="item.id"
                                     v-model="promotion.postIds">
                                 <label class="form-check-label">
@@ -58,6 +58,7 @@
 
 <script>
 import PromotionDTO from '../../../../DTOs/PromotionDto';
+import PostVM from '../../../../Model/PostVM';
 import PostPromotionService from '../../../../Service/api/PostPromotionService';
 import PostService from '../../../../Service/api/PostService';
 
@@ -68,7 +69,7 @@ export default {
     data() {
         return {
             promotion: new PromotionDTO(),
-            post: null
+            post: [new PostVM()]
         };
     },
     methods: {
@@ -99,6 +100,7 @@ export default {
             console.log(this.promotion);
             try {
                 const response = await PostPromotionService.AddPromotion(this.promotion);
+                console.log("Response: ",response);
                     if(response.success){
                         console.log('Dữ liệu đã được gửi thành công:', response);
                         this.QuayLai();

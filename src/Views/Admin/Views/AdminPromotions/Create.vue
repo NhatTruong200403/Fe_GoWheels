@@ -5,8 +5,8 @@
 
     <h1>Thêm mới khuyến mãi</h1>
     <hr />
-    <div class="row">
-        <div class="col-md-4">
+    <div >
+        <div class="">
             <form @submit.prevent="submitForm" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
@@ -16,7 +16,7 @@
                 </div>
                 <div class="form-group">
                     <label for="DiscountValue" class="control-label">Giá trị khuyến mãi</label>
-                    <input v-model.number="promotion.discountValue" type="number" step="0.01" min="0.01" max="1"
+                    <input v-model.number="promotion.discountValue" type="number" step="0.01" min="0.01"
                         class="form-control" />
                     <span for="DiscountValue" class="text-danger"></span>
                 </div>

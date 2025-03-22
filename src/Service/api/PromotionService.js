@@ -5,7 +5,7 @@ const PromotionService = {
     async AddPromotion(promotionDTO){
         const formData = new PromotionDTO(promotionDTO).toFormData();
         const token = sessionStorage.getItem("authToken");
-        const response = await fetch('https://localhost:7265/api/AdminPromotion/Add', {
+        const response = await fetch('http://localhost:5027/api/AdminPromotion/Add', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -24,7 +24,7 @@ const PromotionService = {
     async UpdatePromotion(promotionDTO){
         const formData = new PromotionDTO(promotionDTO).toFormData();
         const token = sessionStorage.getItem("authToken");
-        const response = await fetch(`https://localhost:7265/api/AdminPromotion/Update/${promotionDTO.id}`, {
+        const response = await fetch(`http://localhost:5027/api/AdminPromotion/Update/${promotionDTO.id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -42,7 +42,7 @@ const PromotionService = {
     },
     async getPromotion(id) {
         const response = await axios.get(
-            `https://localhost:7265/api/AdminPromotion/GetById/${id}`
+            `http://localhost:5027/api/AdminPromotion/GetById/${id}`
         );
         console.log(response.data);
         return response.data;
@@ -50,7 +50,7 @@ const PromotionService = {
     async getAllPromotion() {
         const token = sessionStorage.getItem("authToken");
         const response = await axios.get(
-            `https://localhost:7265/api/AdminPromotion/GetAll`,{
+            `http://localhost:5027/api/AdminPromotion/GetAll`,{
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -61,7 +61,7 @@ const PromotionService = {
     async getAllByUserPromotion() {
         const token = sessionStorage.getItem("authToken");
         const response = await axios.get(
-            `https://localhost:7265/api/AdminPromotion/GetAllAdminPromotion`,{
+            `http://localhost:5027/api/AdminPromotion/GetAllAdminPromotionByUserId`,{
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },

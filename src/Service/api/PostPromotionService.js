@@ -5,7 +5,7 @@ const PostPromotionService = {
     async AddPromotion(promotionDTO){
         const formData = new PromotionDTO(promotionDTO).toFormData();
         const token = sessionStorage.getItem("authToken");
-        const response = await fetch('https://localhost:7265/api/UserPromotion/Add', {
+        const response = await fetch('http://localhost:5027/api/UserPromotion/Add', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -24,7 +24,7 @@ const PostPromotionService = {
     async UpdatePromotion(promotionDTO){
         const formData = new PromotionDTO(promotionDTO).toFormData();
         const token = sessionStorage.getItem("authToken");
-        const response = await fetch(`https://localhost:7265/api/UserPromotion/Update/${promotionDTO.id}`, {
+        const response = await fetch(`http://localhost:5027/api/UserPromotion/Update/${promotionDTO.id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -40,9 +40,33 @@ const PostPromotionService = {
       
           return response.json();
     },
+    async DeletePromotion(id) {
+        const token = sessionStorage.getItem("authToken");
+        const response = await axios.post(
+            `http://localhost:5027/api/UserPromotion/Delete/${id}`,id,{
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            }
+        );
+        console.log(response);
+        return response;
+      },
     async getPromotion(id) {
         const response = await axios.get(
-            `https://localhost:7265/api/UserPromotion/GetById/${id}`
+            `http://localhost:5027/api/UserPromotion/GetById/${id}`
+        );
+        console.log(response.data);
+        return response.data;
+      },
+    async getPromotionbyUser(id) {
+        const token = sessionStorage.getItem("authToken");
+        const response = await axios.get(
+            `http://localhost:5027/api/UserPromotion/GetById/${id}`,{
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            }
         );
         console.log(response.data);
         return response.data;
@@ -50,7 +74,7 @@ const PostPromotionService = {
     async getAllPromotion() {
         const token = sessionStorage.getItem("authToken");
         const response = await axios.get(
-            `https://localhost:7265/api/UserPromotion/GetAllByUserId`,{
+            `http://localhost:5027/api/UserPromotion/GetAllByUserId`,{
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },

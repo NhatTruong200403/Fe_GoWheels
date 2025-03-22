@@ -39,14 +39,17 @@
                         <p>Bạn không có tài khoản? <a v-on:click="hamnhan()" href="#" class="register-link">Đăng ký</a>
                         </p>
                     </div> -->
-                    <div class="login-register">
+                    <div class="login-register" style="margin-top: 7px;">
                         <p>Bạn không có tài khoản? <a v-on:click="hamnhan()" href="#" class="register-link">Đăng ký</a>
                         </p>
                         <!-- <p class="hoac">Hoặc</p> -->
                     </div>
                     <!-- <div class="lienket">
-                        <img src="/src/assets/img/logofb.jpg" alt="">
-                        <img src="/src/assets/img/logogg.jpg" alt="">
+                        <div style="padding: 6.5px 20px;border: 0.3px solid #919191c3; border-radius: 5px;">
+                            <img width="45" height="45" style="margin-left: -20px;" src="https://img.icons8.com/color/48/google-logo.png" alt="google-logo"/>
+                            <i>Tiếp tục với Google</i>
+                        </div>
+                        
                     </div> -->
                 </form>
             </div>
@@ -60,6 +63,11 @@
                         <label>Tên</label>
                     </div>
                     <div class="input">
+                        <span class="icon"><ion-icon name="call-outline"></ion-icon></span>
+                        <input type="tel" v-model="PhoneDK" pattern="[0-9]{10,11}" maxlength="11" required>
+                        <label>Số điện thoại</label>
+                    </div>
+                    <div class="input">
                         <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
                         <input type="email" v-model="EmailDK" required>
                         <label>Email</label>
@@ -70,11 +78,11 @@
                         <label>Mật khẩu</label>
                     </div>
                     <div class="remember">
-                        <label><input type="checkbox" v-on:click="nutnho()">Tôi đồng ý với các Điều khoản & Điều
+                        <label><input type="checkbox" @change="checked = !checked" :checked="checked == true">Tôi đồng ý với các Điều khoản & Điều
                             kiện</label>
                     </div>
                     <div class="thongbao" v-if="biendung === true">Email đã được đăng ký!!!</div>
-                    <button type="submit" class="btn" :disabled="biennutnho === false"
+                    <button type="submit" class="btn" :disabled="checked === false"
                         :class="{ matchuot: biennutnho === false }">Đăng kí</button>
                     <div class="login-register">
                         <p>Bạn đã sẵn sàng để đăng nhập? <a v-on:click="hamnhan2()" href="#" class="login-link">Đăng
@@ -138,6 +146,7 @@ export default {
             bienhien: true,
             NameUser: '',
             PassDK: '',
+            PhoneDK: '',
             EmailDK: '',
             EmailUser: '',
             PassUser: '',
@@ -147,6 +156,7 @@ export default {
             dai: false,
             user: null,
             dangnhapr: 1,
+            checked: false
         }
     },
     props: {
@@ -175,6 +185,7 @@ export default {
                     console.log("Đã đăng nhập được user");
                     this.$emit('HamGetUser');
                     
+                    
                 }
 
                 this.dangnhapr = 2; // Đánh dấu trạng thái đăng nhập thành công
@@ -186,7 +197,7 @@ export default {
 
         async postTKDK() {
             try {
-                const response = await AuthenticationService.SignUp(this.NameUser,this.EmailDK,this.PassDK);
+                const response = await AuthenticationService.SignUp(this.NameUser,this.EmailDK,this.PassDK, this.PhoneDK);
                 const result = response.data.succeeded;
                 console.log('Response:', result);
                 if (result == true) {
@@ -237,7 +248,8 @@ export default {
 }
 
 .hoac {
-    margin-top: 10px;
+    margin-bottom: -5px;
+    margin-top: 0px;
 }
 
 .lienket {
@@ -286,7 +298,8 @@ export default {
 .wrapper {
     position: relative;
     width: 400px;
-    height: 460px;
+    height: 410px;
+    /* height: 480px; */
     background: rgba(255, 255, 255, 0.664);
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
@@ -301,9 +314,11 @@ export default {
 
 .wrapper.active {
     margin-top: 20px;
-    height: 500px;
+    height: 550px;
 }
-
+span{
+    margin-inline: 0 !important;
+}
 .wrapper .form-box.login {
     transition: transform .18s ease;
     transform: translateX(0);
